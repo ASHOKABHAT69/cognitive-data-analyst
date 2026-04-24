@@ -5,19 +5,49 @@ function FileUpload({ onUploadSuccess }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("info");
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef(null);
+
+  const showMessage = (text, type = "info") => {
+    setMessage(text);
+    setMessageType(type);
+  };
+
+  const getUploadErrorMessage = (error) => {
+    const detail = error.response?.data?.detail;
+
+    if (typeof detail === "string") {
+      return detail;
+    }
+
+    if (Array.isArray(detail)) {
+      return detail
+        .map((item) => item.msg || item.message || JSON.stringify(item))
+        .join(" ");
+    }
+
+    if (error.response?.status) {
+      return `Server returned ${error.response.status}. Please check the CSV format.`;
+    }
+
+    if (error.request) {
+      return "Could not connect to the backend. Make sure the backend server is running.";
+    }
+
+    return error.message || "Failed to upload CSV.";
+  };
 
   const handleSelectedFile = (file) => {
     if (!file) return;
 
     if (!file.name.toLowerCase().endsWith(".csv")) {
-      setMessage("Please upload only a CSV file.");
+      showMessage("Please upload only a CSV file.", "error");
       return;
     }
 
     setSelectedFile(file);
-    setMessage("");
+    showMessage("");
   };
 
   const handleFileChange = (event) => {
@@ -45,7 +75,7 @@ function FileUpload({ onUploadSuccess }) {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      setMessage("Please select a CSV file first.");
+      showMessage("Please select a CSV file first.", "error");
       return;
     }
 
@@ -54,7 +84,7 @@ function FileUpload({ onUploadSuccess }) {
 
     try {
       setLoading(true);
-      setMessage("");
+      showMessage("");
 
       const response = await axios.post(
         "http://127.0.0.1:5000/upload-csv",
@@ -67,10 +97,10 @@ function FileUpload({ onUploadSuccess }) {
       );
 
       onUploadSuccess(response.data);
-      setMessage("CSV uploaded successfully.");
+      showMessage("CSV uploaded successfully.", "success");
     } catch (error) {
       console.error("Upload error:", error);
-      setMessage("Failed to upload CSV.");
+      showMessage(`Failed to upload CSV. ${getUploadErrorMessage(error)}`, "error");
     } finally {
       setLoading(false);
     }
@@ -109,7 +139,11 @@ function FileUpload({ onUploadSuccess }) {
         </button>
       </div>
 
-      {message && <p className="status-text">{message}</p>}
+      {message && (
+        <p className={`status-text ${messageType === "error" ? "error-text" : ""}`}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }

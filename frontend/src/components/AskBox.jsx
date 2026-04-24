@@ -17,7 +17,7 @@ function AskBox({ onResult }) {
       setMessage("");
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/ask-question",
+        "http://127.0.0.1:5000/ask-question",
         {
           question: question,
         }

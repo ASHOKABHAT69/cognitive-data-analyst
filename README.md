@@ -1,46 +1,109 @@
 # Cognitive Data Analyst
 
-A full-stack application that leverages AI to provide intelligent data analysis and insights from CSV files. This project combines a Python backend with a React frontend to create an interactive data exploration experience.
+Cognitive Data Analyst is a full-stack AI data analysis application that lets users upload CSV files, ask questions in natural language, view SQL-backed results, inspect charts, and export the final analysis as a PDF report.
 
-## Project Overview
+The project combines a FastAPI backend, DuckDB query execution, Gemini-powered query planning, and a React frontend for an interactive data exploration workflow.
 
-The Cognitive Data Analyst enables users to:
-- Upload and analyze CSV data files
-- Ask natural language questions about their data
-- Receive AI-powered insights and visualizations
-- Explore data through an intuitive web interface
+## Sample Output
+
+### Application Workflow
+
+![Upload dataset and ask question](images/upload-ask-top%20heading.png)
+
+### Dataset Preview
+
+![Dataset preview](images/Dataset-priveiw.png)
+
+### AI Query Output
+
+![AI query output](images/AI-Query-Output.png)
+
+### Result Table
+
+![Result table](images/Result-Table.png)
+
+### Chart View
+
+![Chart view](images/Chart-view.png)
+
+### Exported PDF Report
+
+Download or preview the generated report:
+
+[Open sample PDF report](Exported-Report/player-query-report.pdf)
+
+## Key Features
+
+- Upload CSV datasets and preview rows before analysis.
+- Ask natural language questions about uploaded data.
+- Use voice input in supported browsers such as Chrome and Edge.
+- Generate query plans with Gemini and convert them into SQL.
+- Execute analysis queries with DuckDB.
+- Automatically retry failed generated queries with a repair step.
+- Display results in both table and chart views.
+- Export dataset summary, question, generated SQL, chart view, and result table as a PDF report.
+
+## Tech Stack
+
+### Backend
+
+- FastAPI
+- Uvicorn
+- Pandas
+- DuckDB
+- Google GenAI SDK
+- Pydantic
+
+### Frontend
+
+- React
+- Axios
+- Recharts
+- jsPDF
+- jsPDF AutoTable
 
 ## Project Structure
 
-```
+```text
 cognitive-data-analyst/
-├── backend/                 # Python Flask backend
-│   ├── app.py              # Main Flask application
-│   ├── requirements.txt     # Python dependencies
-│   ├── data/               # Data storage directory
-│   │   └── Player.csv
-│   └── utils/              # Utility modules
-│       ├── csv_handler.py          # CSV file handling
-│       ├── fallback_rules.py        # Fallback logic for queries
-│       ├── prompt_builder.py        # AI prompt construction
-│       ├── query_planner.py         # Query planning logic
-│       ├── schema_helper.py         # Database schema utilities
-│       ├── sql_builder.py           # SQL query building
-│       └── sql_runner.py            # SQL execution
-├── frontend/               # React web application
-│   ├── package.json        # NPM dependencies
-│   ├── public/             # Static files
-│   └── src/
-│       ├── App.js          # Main React component
-│       ├── App.css         # Application styles
-│       ├── index.js        # Entry point
-│       └── components/     # React components
-│           ├── AskBox.jsx         # Query input component
-│           ├── DataPreview.jsx    # Data preview component
-│           ├── FileUpload.jsx     # File upload component
-│           ├── ResultChart.jsx    # Chart visualization
-│           └── ResultTable.jsx    # Table display
-└── Player.csv             # Sample dataset
+|-- backend/
+|   |-- app.py
+|   |-- requirements.txt
+|   |-- .env.example
+|   `-- utils/
+|       |-- csv_handler.py
+|       |-- fallback_rules.py
+|       |-- prompt_builder.py
+|       |-- query_planner.py
+|       |-- schema_helper.py
+|       |-- sql_builder.py
+|       `-- sql_runner.py
+|-- frontend/
+|   |-- package.json
+|   |-- public/
+|   `-- src/
+|       |-- App.js
+|       |-- App.css
+|       |-- index.js
+|       `-- components/
+|           |-- AskBox.jsx
+|           |-- DataPreview.jsx
+|           |-- FileUpload.jsx
+|           |-- PdfReportButton.jsx
+|           |-- ResultChart.jsx
+|           `-- ResultTable.jsx
+|-- images/
+|   |-- upload-ask-top heading.png
+|   |-- Dataset-priveiw.png
+|   |-- AI-Query-Output.png
+|   |-- Result-Table.png
+|   `-- Chart-view.png
+|-- Exported-Report/
+|   `-- player-query-report.pdf
+|-- Player.csv
+|-- housing.csv
+|-- .gitignore
+`-- README.md
 ```
 
 ## Getting Started
@@ -49,131 +112,109 @@ cognitive-data-analyst/
 
 - Python 3.8 or higher
 - Node.js 14 or higher
-- npm or yarn
-- Git
+- npm
+- Gemini API key
 
 ### Backend Setup
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+```
 
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   ```
+Add your Gemini API key in `backend/.env`:
 
-3. Activate the virtual environment:
-   - On Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
 
-4. Install Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Run the backend:
 
-5. Run the Flask server:
-   ```bash
-   python app.py
-   ```
-   The backend will start at `http://localhost:5000`
+```bash
+python app.py
+```
+
+The API runs at:
+
+```text
+http://127.0.0.1:5000
+```
 
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
+Open a second terminal:
 
-2. Install npm dependencies:
-   ```bash
-   npm install
-   ```
+```bash
+cd frontend
+npm install
+npm start
+```
 
-3. Start the development server:
-   ```bash
-   npm start
-   ```
-   The frontend will open at `http://localhost:3000`
+The frontend runs at:
+
+```text
+http://localhost:3000
+```
 
 ## Usage
 
-1. Open the application in your web browser at `http://localhost:3000`
-2. Use the **File Upload** component to upload your CSV file
-3. Preview your data using the **Data Preview** component
-4. Ask questions about your data in the **Ask Box**
-5. View results as tables or charts
+1. Start the backend and frontend servers.
+2. Open `http://localhost:3000`.
+3. Upload a CSV dataset.
+4. Review the dataset preview.
+5. Ask a question using text or voice input.
+6. View the generated SQL-backed result table.
+7. Inspect the chart view when the result supports visualization.
+8. Click **Download PDF Report** to export the analysis.
 
-## Key Features
+## API Overview
 
-- **Natural Language Queries**: Ask questions about your data in plain English
-- **AI-Powered Analysis**: Leverages AI to understand and execute complex queries
-- **Data Visualization**: View results as tables or interactive charts
-- **CSV Support**: Work with any CSV file format
-- **Fallback Logic**: Implements fallback rules for robust query handling
-- **Schema Understanding**: Automatically analyzes your data structure
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/` | Confirms the backend is running. |
+| `GET` | `/health` | Returns backend health status. |
+| `POST` | `/upload-csv` | Uploads and previews a CSV file. |
+| `POST` | `/ask-question` | Accepts a natural language question and returns SQL-backed analysis results. |
 
-## Architecture
+## PDF Report Export
 
-### Backend
-- **Framework**: Flask (Python web framework)
-- **Modules**:
-  - `csv_handler.py`: Processes and parses CSV files
-  - `query_planner.py`: Plans and optimizes data queries
-  - `sql_builder.py`: Constructs SQL queries from natural language
-  - `sql_runner.py`: Executes SQL queries and returns results
-  - `prompt_builder.py`: Builds prompts for AI models
-  - `schema_helper.py`: Extracts and manages data schema information
-  - `fallback_rules.py`: Provides fallback strategies for query execution
+The PDF export is generated in the frontend using `jsPDF` and `jspdf-autotable`. A report includes:
 
-### Frontend
-- **Framework**: React (JavaScript UI library)
-- **Components**:
-  - `App.js`: Main application container
-  - `FileUpload.jsx`: Handles file uploads
-  - `DataPreview.jsx`: Displays data preview
-  - `AskBox.jsx`: Query input interface
-  - `ResultTable.jsx`: Tabular result display
-  - `ResultChart.jsx`: Chart visualization
+- Dataset filename, row count, column count, and generation time.
+- User question.
+- Execution mode.
+- Generated SQL.
+- Chart section for compatible two-column numeric results.
+- Result table.
+- Page footer with report metadata.
 
-## Dependencies
+## Security Notes
 
-### Backend
-See `backend/requirements.txt` for complete Python dependencies.
-
-### Frontend
-See `frontend/package.json` for complete npm dependencies.
+- Real API keys must stay in `backend/.env`.
+- `.env` and `.env.*` files are ignored by Git.
+- `backend/.env.example` is safe to commit because it contains only placeholder values.
 
 ## Development
 
-### Running Tests
-```bash
-# Backend tests
-cd backend
-pytest
+### Backend
 
-# Frontend tests
+```bash
+cd backend
+python app.py
+```
+
+### Frontend
+
+```bash
 cd frontend
-npm test
+npm start
 ```
 
-### Build for Production
+### Production Build
 
-#### Backend
-```bash
-cd backend
-# Configure production settings and run with a production server
-gunicorn app:app
-```
-
-#### Frontend
 ```bash
 cd frontend
 npm run build
@@ -181,23 +222,11 @@ npm run build
 
 ## Troubleshooting
 
-- **Port conflicts**: If ports 5000 or 3000 are already in use, modify the port settings in `app.py` and `frontend/package.json`
-- **Module not found errors**: Ensure all dependencies are installed in both backend and frontend
-- **CORS issues**: Check backend CORS configuration if frontend can't communicate with backend
-- **CSV parsing errors**: Verify your CSV file format matches expected structure
+- If the frontend cannot reach the backend, confirm the backend is running on `http://127.0.0.1:5000`.
+- If queries fail, confirm `GEMINI_API_KEY` is set in `backend/.env`.
+- If CSV upload fails, verify the file has a `.csv` extension and valid tabular content.
+- If voice input is unavailable, use Chrome or Edge and allow microphone access.
 
-## Contributing
+## Last Updated
 
-Feel free to fork this project and submit pull requests for improvements.
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Support
-
-For issues or questions, please open an issue in the project repository.
-
----
-
-**Last Updated**: April 2026
+April 2026
